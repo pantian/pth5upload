@@ -1,5 +1,5 @@
-#h5uploadfile
-
+#pth5upload
+```javascript
      * opt.uploadUrl=''                                 上传服务器
      * opt.onSelect=function()                          文件选择回调
      * opt.onSelectBefore=function(所有选择的文件数组)    文件选择加入文件队列之前回调，如果返回false ,则停止文件加入队列
@@ -24,3 +24,4 @@
      * opt.accept_type=''           接受的文件类型,多个类型用’,‘隔开，如何'jpg,gif,png'，为空，表示不限制类型
      * opt.fileMaxSize=0            上传的文件大小的最大值，默认0为不限制，单位kb
      * opt.uploadingSize=3                          //同时上传的图片数量，默认3个文件
+```
