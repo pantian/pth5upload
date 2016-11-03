@@ -58,7 +58,7 @@
          * opt.accept_type=''           接受的文件类型,多个类型用’,‘隔开，如何'jpg,gif,png'，为空，表示不限制类型
          * opt.fileMaxSize=0            上传的文件大小的最大值，默认0为不限制，单位kb
          * opt.uploadingSize=3                          //同时上传的图片数量，默认3个文件
-         *
+         * opt.xhrFields ={}            自定义选项
          */
         this.upload = function ($this, opt) {
 
@@ -325,31 +325,33 @@
                     } catch (e) {
                         _t.throwError(null, e.message);
                     }
-
                 }
             };
 
             var obj = $("div");
             if(typeof Zepto == undefined ){
-                $.ajax({
-                    url       : _t.opt.uploadUrl,
-                    data: _this.formData, processData: false,
-                    contentType: false,
-                    type: 'post',
-                    beforeSend: function (e) {
-                        if (_t.isFunction(_t.opt.onStartSend))_t.opt.onStartSend(this);
-                    },
-                    xhr       : function () {
+                var ajaxOpt = {
+                    url : _t.opt.uploadUrl ,
+                    data : _this.formData , processData : false ,
+                    contentType : false ,
+                    type : 'post' ,
+                    beforeSend : function ( e ) {
+                        if ( _t.isFunction( _t.opt.onStartSend ) )_t.opt.onStartSend( this );
+                    } ,
+                    xhr : function () {
                         var xhr = $.ajaxSettings.xhr();
                         //绑定上传进度的回调函数
-                        xhr.upload.addEventListener('progress', progress, false);
+                        xhr.upload.addEventListener( 'progress' , progress , false );
                         return xhr;//一定要返回，不然jQ没有XHR对象用了
-                    },
-                    complete  : function () {
-                        if (_t.isFunction(_t.opt.onUploadComplete))_t.opt.onUploadComplete(_uploadFile);
+                    } ,
+                    complete : function () {
+                        if ( _t.isFunction( _t.opt.onUploadComplete ) )_t.opt.onUploadComplete( _uploadFile );
                     }
-
-                }).done(function (response) {
+                };
+                if(_t.opt.xhrFields){
+                    ajaxOpt.xhrFields = _t.opt.xhrFields;
+                }
+                $.ajax(ajaxOpt).done(function (response) {
                     try {
                         response = $.parseJSON(response);
                     } catch (e) {
@@ -398,68 +400,77 @@
                 });
             }else{
                 //zepto ajax方法
-                $.ajax({
-                    url       : _t.opt.uploadUrl, data: _this.formData, processData: false, contentType: false, type: 'post',
-                    beforeSend: function (e) {
-                        if (_t.isFunction(_t.opt.onStartSend))_t.opt.onStartSend(this);
-                    },
-                    xhr       : function () {
+                var ajaxOpt = {
+                    url : _t.opt.uploadUrl ,
+                    data : _this.formData ,
+                    processData : false ,
+                    contentType : false ,
+                    type : 'post' ,
+                    beforeSend : function ( e ) {
+                        if ( _t.isFunction( _t.opt.onStartSend ) )_t.opt.onStartSend( this );
+                    } ,
+                    xhr : function () {
                         var xhr = $.ajaxSettings.xhr();
                         //绑定上传进度的回调函数
-                        xhr.upload.addEventListener('progress', progress, false);
+                        xhr.upload.addEventListener( 'progress' , progress , false );
                         return xhr;//一定要返回，不然jQ没有XHR对象用了
-                    },
-                    complete  : function () {
-                        if (_t.isFunction(_t.opt.onUploadComplete))_t.opt.onUploadComplete(_uploadFile);
-                        if (_t.getQueueCount() > 0) {
+                    } ,
+                    complete : function () {
+                        if ( _t.isFunction( _t.opt.onUploadComplete ) )_t.opt.onUploadComplete( _uploadFile );
+                        if ( _t.getQueueCount() > 0 ) {
                             _t._uploadNext();//上传一下文件
                         }
-                        if (_t.getQueueCount() == 0) {
+                        if ( _t.getQueueCount() == 0 ) {
                             _t.allUploadComplete();//
                         }
                         _t.debugInfo();
-                    },
-                    success:function (response) {
+                    } ,
+                    success : function ( response ) {
                         try {
-                            response = $.parseJSON(response);
-                        } catch (e) {
-                            if (_t.isFunction(_t.opt.uploadError)) {
-                                _t.opt.uploadError(_uploadFile, e.message);
+                            response = $.parseJSON( response );
+                        } catch ( e ) {
+                            if ( _t.isFunction( _t.opt.uploadError ) ) {
+                                _t.opt.uploadError( _uploadFile , e.message );
                             }
                         } finally {
-                            if (_t.isFunction(_t.opt.uploadSuccess)) {
-                                if (_t.opt.uploadSuccess(_uploadFile, response) === false) {
+                            if ( _t.isFunction( _t.opt.uploadSuccess ) ) {
+                                if ( _t.opt.uploadSuccess( _uploadFile , response ) === false ) {
                                     //上传失败
-                                    _t.opt.uploadError(_uploadFile);
+                                    _t.opt.uploadError( _uploadFile );
                                     _t.upload_fail_number++;
                                 } else {
                                     //上传成功
-                                    _t.removeFileFromQueue(_uploadFile.id);
+                                    _t.removeFileFromQueue( _uploadFile.id );
                                     _t.upload_success_number++;
                                 }
                             }
                         }
-                    },
-                    error:function (e) {
-                        switch (e.status) {
+                    } ,
+                    error : function ( e ) {
+                        switch ( e.status ) {
                             case 413:
-                                _t.throwError(_t.error_code.Request_Entity_Too_Large);
+                                _t.throwError( _t.error_code.Request_Entity_Too_Large );
                                 break;
                             case 404:
-                                _t.throwError(_t.Request_not_find);
+                                _t.throwError( _t.Request_not_find );
                                 break;
                         }
-                        if (_t.isFunction(_t.opt.uploadError)) {
-                            if(_t.opt.uploadError(_uploadFile,error_msg)===true){
+                        if ( _t.isFunction( _t.opt.uploadError ) ) {
+                            if ( _t.opt.uploadError( _uploadFile , error_msg ) === true ) {
                                 //返回true ，把上传失败的队列文件删除
-                                _t.removeFileFromQueue(_uploadFile.id);
+                                _t.removeFileFromQueue( _uploadFile.id );
                             }
                         }
                         _t.upload_fail_number++;
                         _t.debugInfo();
                     }
 
-                })
+                };
+                if(_t.opt.xhrFields){
+                    ajaxOpt.xhrFields = _t.opt.xhrFields;
+                }
+
+                $.ajax( ajaxOpt );
             }
 
 

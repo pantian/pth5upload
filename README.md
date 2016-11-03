@@ -24,4 +24,5 @@
      * opt.accept_type=''           接受的文件类型,多个类型用’,‘隔开，如何'jpg,gif,png'，为空，表示不限制类型
      * opt.fileMaxSize=0            上传的文件大小的最大值，默认0为不限制，单位kb
      * opt.uploadingSize=3                          //同时上传的图片数量，默认3个文件
+     * opt.xhrFields ={}            自定义选项
 ```
