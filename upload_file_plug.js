@@ -1,9 +1,8 @@
-
 (function ( global , factory ) {
     typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
     typeof define === 'function' && define.amd ? define( factory ) : (global.ptH5upload = factory());
-}( this ,function (  )
-    {
+}( this , function () {
+
         var _t = this;
         /**
          * 错误处理与回调
@@ -18,7 +17,7 @@
                 console.log( 'error_message :' + msg );
             }
             if ( _t.isFunction( _t.opt.error ) ) {
-                return _t.opt.error( code , msg );
+                _t.opt.error( code , msg );
             } else {
                 throw new Error( msg , code );
             }
@@ -29,7 +28,7 @@
         this.id_index = 0;//文件ID索引
         this.uploaded_index = 0;
         this.imageFile = [];
-        this.version = '0.3';
+        this.version = '0.4';
 
         /**
          *
@@ -109,13 +108,6 @@
             }
             return this.opt;
         };
-
-        this.isStop = false;
-
-        this.stop = function ( isStop ) {
-            isStop = isStop || true;
-            this.isStop = (isStop === true);
-        };
         /**
          * 文件选择事件处理
          * @param inputFile
@@ -143,12 +135,11 @@
                         _fileObj.localUrl = window.URL.createObjectURL( _fileObj );//本地图片显示资源
                     }
                     if ( _t.chkAcceptType( _fileObj ) ) {
-                        if ( (_t.opt.fileMaxSize ) ) {
-                            if ( _t.chkAcceptSize( _fileObj ) === true ) {
-                                _t.imageFile[ _t.id_index ] = _fileObj;
-                                _t.id_index++;
-                                if ( _t.isFunction( _t.opt.onAddFile ) )_t.opt.onAddFile( _fileObj );//添加文件回调事件
-                            }
+                        if ( (_t.opt.fileMaxSize > 0 && _t.chkAcceptSize( _fileObj ) || _t.opt.fileMaxSize == 0) ) {
+
+                            _t.imageFile[ _t.id_index ] = _fileObj;
+                            _t.id_index++;
+                            if ( _t.isFunction( _t.opt.onAddFile ) )_t.opt.onAddFile( _fileObj );//添加文件回调事件
                         } else {
                             if ( _t.throwError( _t.error_code.fileMaxSizeParam_invalid ) === false ) {
                                 return false;
@@ -180,10 +171,12 @@
                 if ( _size <= _t.opt.fileMaxSize * 1024 ) {
                     return true;
                 } else {
-                    return _t.throwError( _t.error_code.file_size_error_big );
+                    _t.throwError( _t.error_code.file_size_error_big );
+                    return false;
                 }
             } else {
-                return _t.throwError( _t.error_code.file_size_error );
+                _t.throwError( _t.error_code.file_size_error );
+                return false;
             }
 
         };
@@ -226,7 +219,6 @@
          * 单个图片上传
          */
         this.doUpload = function () {
-            if ( this.isStop )return false;
             _t.stopUploadToken = false;//停止上传标记
             if ( _t.getQueueCount() == 0 ) {
                 _t.throwError( _t.error_code.notFile );
@@ -242,7 +234,6 @@
                     }
                     j++;
                     _t.uploaded_index++;
-
                 }
             }
         };
@@ -287,7 +278,7 @@
         };
         /**
          * 文件上传处理
-         * @param _uploadFile
+         * @param file
          * @private
          */
         this._uploadFile = function ( _uploadFile ) {
@@ -339,7 +330,7 @@
             };
 
             var obj = $( "div" );
-            if ( typeof Zepto != undefined ) {
+            if ( typeof Zepto == undefined ) {
                 $.ajax( {
                     url : _t.opt.uploadUrl ,
                     data : _this.formData , processData : false ,
