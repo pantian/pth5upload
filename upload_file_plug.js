@@ -386,6 +386,7 @@
                         xhr        : function () {
                             var xhr = $.ajaxSettings.xhr();
                             //绑定上传进度的回调函数
+                            xhr.withCredentials = true;
                             xhr.upload.addEventListener( 'progress' , progress , false );
                             return xhr;//一定要返回，不然jQ没有XHR对象用了
                         } ,
@@ -457,6 +458,7 @@
                         } ,
                         xhr        : function () {
                             var xhr = $.ajaxSettings.xhr();
+                            xhr.withCredentials = true;
                             //绑定上传进度的回调函数
                             xhr.upload.addEventListener( 'progress' , progress , false );
                             return xhr;//一定要返回，不然jQ没有XHR对象用了
