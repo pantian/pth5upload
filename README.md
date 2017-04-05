@@ -1,6 +1,10 @@
-#pth5upload
+# pth5upload
 
-```javascript
+- 2017-4-05 支持base64上传
+
+配置说明
+
+```
      * opt.uploadUrl=''                                 上传服务器
      * opt.onSelect=function()                          文件选择回调
      * opt.onSelectBefore=function(所有选择的文件数组)    文件选择加入文件队列之前回调，如果返回false ,则停止文件加入队列
