@@ -1,4 +1,5 @@
 #pth5upload
+
 ```javascript
      * opt.uploadUrl=''                                 上传服务器
      * opt.onSelect=function()                          文件选择回调
@@ -25,4 +26,5 @@
      * opt.fileMaxSize=0            上传的文件大小的最大值，默认0为不限制，单位kb
      * opt.uploadingSize=3                          //同时上传的图片数量，默认3个文件
      * opt.xhrFields ={}            自定义选项
+     * opt.uploadContentType ='file'            图片上传数据类型： file 文件形式上传;base64 以base64 数据上传
 ```
