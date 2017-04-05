@@ -169,6 +169,7 @@
                         reader.onload = function(e){
                             //转成base64
                             _t.imageFile[ _t.id_index ].base64 = this.result;
+                            this.result = null;
                             _t.id_index++;
                             if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
                         }
