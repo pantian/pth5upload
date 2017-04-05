@@ -31,4 +31,5 @@
      * opt.uploadingSize=3                          //同时上传的图片数量，默认3个文件
      * opt.xhrFields ={}            自定义选项
      * opt.uploadContentType ='file'            图片上传数据类型： file 文件形式上传;base64 以base64 数据上传
+     * opt.setBase64Before =function()          对base64 内容处理二次处理,返回给插件
 ```
