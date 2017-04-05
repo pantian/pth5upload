@@ -147,7 +147,7 @@
                                 _t.opt.fileMaxSize > 0 && _t.chkAcceptSize( _fileObj ) || _t.opt.fileMaxSize == 0
                                 ) ) {
                                 _t.imageFile[ _t.id_index ] = _fileObj;
-                                _t.id_index++;
+                               
                                 if ( _t.isFunction( _t.opt.onAddFile ) ) _t.opt.onAddFile( _fileObj );//添加文件回调事件
                             } else {
                                 if ( _t.throwError( _t.error_code.fileMaxSizeParam_invalid ) === false ) {
@@ -169,9 +169,11 @@
                         reader.onload = function(e){
                             //转成base64
                             _t.imageFile[ _t.id_index ].base64 = this.result;
+                            _t.id_index++;
                             if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
                         }
                     }else{
+                        _t.id_index++;
                         if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
                     }
                 } catch ( e ) {
