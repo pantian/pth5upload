@@ -65,6 +65,7 @@
              * opt.uploadingSize=3                          //同时上传的图片数量，默认3个文件
              * opt.xhrFields ={}            自定义选项
              * opt.uploadContentType ='file'            图片上传数据类型： file 文件形式上传;base64 以base64 数据上传
+             * opt.setBase64Before =function()          对base64 内容处理二次处理,返回给插件
              */
             this.upload = function ( $this , opt ) {
                 
@@ -168,7 +169,13 @@
                         reader.readAsDataURL(_fileObj);
                         reader.onload = function(e){
                             //转成base64
-                            _t.imageFile[ _t.id_index ].base64 = this.result;
+                            if(_t.isFunction(_t.opt.setBase64Before)){
+                                _t.imageFile[ _t.id_index ].base64 = _t.opt.setBase64Before(this.result)
+    
+                            }else{
+                                _t.imageFile[ _t.id_index ].base64 = this.result;
+    
+                            }
                             this.result = null;
                             _t.id_index++;
                             if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
