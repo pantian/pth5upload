@@ -138,7 +138,7 @@
                         }
                         _fileObj.id = _t.id_index;
                         //如果是图片的，就转换成本地url
-                        if ( /image\//.test( _fileObj.type ) ) {
+                        if (_fileObj.type &&  /image\//.test( _fileObj.type ) ) {
                             _fileObj.localUrl = window.URL.createObjectURL( _fileObj );//本地图片显示资源
                         }
                         //如果是base64上传的，
