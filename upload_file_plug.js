@@ -141,15 +141,7 @@
                         if (_fileObj.type &&  /image\//.test( _fileObj.type ) ) {
                             _fileObj.localUrl = window.URL.createObjectURL( _fileObj );//本地图片显示资源
                         }
-                        //如果是base64上传的，
-                        if(_t.opt.uploadContentType=='base64'){
-                            var reader = new FileReader();
-                            reader.readAsDataURL(_fileObj);
-                            reader.onload = function(e){
-                                //转成base64
-                                _fileObj.base64 = this.result;
-                            }
-                        }
+                       
                         if ( _t.chkAcceptType( _fileObj ) ) {
                             if ( (
                                 _t.opt.fileMaxSize > 0 && _t.chkAcceptSize( _fileObj ) || _t.opt.fileMaxSize == 0
@@ -170,7 +162,18 @@
                         console.log( _t.imageFile );
                     }
                     if ( _t.isFunction( _t.opt.onSelect ) ) _t.opt.onSelect( _t.imageFile );//选择文件回调事件
-                    if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
+                    //如果是base64上传的，
+                    if(_t.opt.uploadContentType=='base64'){
+                        var reader = new FileReader();
+                        reader.readAsDataURL(_fileObj);
+                        reader.onload = function(e){
+                            //转成base64
+                            _t.imageFile[ _t.id_index ].base64 = this.result;
+                            if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
+                        }
+                    }else{
+                        if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
+                    }
                 } catch ( e ) {
                     _t.throwError( null , e.message );
                 }
