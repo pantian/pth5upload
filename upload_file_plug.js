@@ -116,6 +116,16 @@
                 }
                 return this.opt;
             };
+            this.randomStn = function ( len ) {
+                len = len || 32;
+                var $chars = 'ABCDEFGHJKMNPQROSTWXYLZabcdefhijkOlmnprstwxyz12345678';
+                var maxPos = $chars.length;
+                var pwd = '';
+                for ( i = 0 ; i < len ; i++ ) {
+                    pwd += $chars.charAt( Math.floor( Math.random() * maxPos ) );
+                }
+                return pwd;
+            };
             /**
              * 文件选择事件处理
              * @param inputFile
@@ -138,18 +148,20 @@
                             if ( _t.opt.onAddFileBefore( _fileObj ) === false )continue;//返回false ，则不加入队列
                         }
                         _fileObj.id = _t.id_index;
+                        _fileObj._hashId=this.randomStn();
                         //如果是图片的，就转换成本地url
                         if (_fileObj.type &&  /image\//.test( _fileObj.type ) ) {
                             _fileObj.localUrl = window.URL.createObjectURL( _fileObj );//本地图片显示资源
                         }
-                       
+                        
                         if ( _t.chkAcceptType( _fileObj ) ) {
                             if ( (
-                                _t.opt.fileMaxSize > 0 && _t.chkAcceptSize( _fileObj ) || _t.opt.fileMaxSize == 0
+                                    _t.opt.fileMaxSize > 0 && _t.chkAcceptSize( _fileObj ) || _t.opt.fileMaxSize == 0
                                 ) ) {
                                 _t.imageFile[ _t.id_index ] = _fileObj;
-                               
+                                
                                 if ( _t.isFunction( _t.opt.onAddFile ) ) _t.opt.onAddFile( _fileObj );//添加文件回调事件
+                                _t.id_index++;
                             } else {
                                 if ( _t.throwError( _t.error_code.fileMaxSizeParam_invalid ) === false ) {
                                     return false;
@@ -171,17 +183,17 @@
                             //转成base64
                             if(_t.isFunction(_t.opt.setBase64Before)){
                                 _t.imageFile[ _t.id_index ].base64 = _t.opt.setBase64Before(this.result)
-    
+                                
                             }else{
                                 _t.imageFile[ _t.id_index ].base64 = this.result;
-    
+                                
                             }
                             this.result = null;
                             _t.id_index++;
                             if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
                         }
                     }else{
-                        _t.id_index++;
+                        //_t.id_index++;
                         if ( _t.opt.autoUpload && _t.loadingNumber === 0 ) _t.doUpload();//自动上传
                     }
                 } catch ( e ) {
@@ -329,7 +341,7 @@
                 }
                 this.loadedList[ _uploadFile.id ] = true;
                 if ( _t.opt.debug ) {
-                    _t.log( '>> upload file id :' + _uploadFile.id );
+                    //_t.log( '>> upload file id :' + _uploadFile.id );
                     _t.log( this.loadedList );
                 }
                 
@@ -381,7 +393,7 @@
                 };
                 
                 var obj = $( "div" );
-                if ( typeof Zepto == undefined ) {
+                if ( typeof Zepto == 'undefined' ) {
                     var ajaxOpt = {
                         url        : _t.opt.uploadUrl ,
                         data       : _this.formData ,
@@ -646,7 +658,7 @@
             
             this.isFunction = function ( funcObj ) {
                 return (
-                typeof funcObj == 'function'
+                    typeof funcObj == 'function'
                 );
             };
             /**
